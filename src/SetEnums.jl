@@ -162,6 +162,7 @@ function Base.iterate(::EnumSet{W, T}, (v, set)) where {W,T}
     end
     return nothing
 end
+# asdf
 
 Base.bitstring(s::Union{AbstractSetEnum,EnumSet}) = bitstring(wrapped(s))
 end # module SetEnums
