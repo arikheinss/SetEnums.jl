@@ -4,7 +4,7 @@ module SetEnums
 import Base: instances, Integer, empty, in, &, |
 import Base.Enums: Enum, namemap
 
-export @setenum, set, toggle, delete, EnumSet
+export @setenum, set, toggle, delete, EnumSet 
 
 abstract type AbstractSetEnum{T} <: Enum{T} end
 Integer(x::AbstractSetEnum) = getfield(x,1) #assuming each SetEnum is a simple wrapper around a primitive Integer 
@@ -98,14 +98,13 @@ macro setenum(name::Symbol, instances::Symbol...)
         UInt8
     end
 
-    return :(@setenum($(esc(name))::$Inttype, $(esc.(instances)...)))
+    return :(@setenum $(esc(name))::$Inttype $(esc.(instances)...))
 end
 
 macro setenum(name::Expr, instanceNames...)
     name.head == Symbol("::") || throw("name was not <name>::<type> -- $name")
     enum_name = esc(name.args[1])
     enum_type = Core.eval(__module__, name.args[2])
-    print(enum_type, typeof(enum_type))
     if length(instanceNames) == 1 && instanceNames[1] isa Expr && instanceNames[1].head === :block
         instanceNames = instanceNames[1].args
     end
@@ -127,7 +126,7 @@ macro setenum(name::Expr, instanceNames...)
         Base.typemin(::Type{$enum_name}) = $enum_name($(instanceValues[1]))
         Base.typemax(::Type{$enum_name}) = $enum_name($(instanceValues[end]))
         Base.instances(::Type{$enum_name}) = $instanceValues
-        Base.Enums.namemap(::Type{$enum_name}) = Dict($( (val => sym.args[1] for (val, sym) in zip(instanceValues, instanceNames))...))
+        Base.Enums.namemap(::Type{$enum_name}) = Dict($( (val => sym for (val, sym) in zip(instanceValues, instanceNames))...))
         $enum_name
 
     end
@@ -162,7 +161,6 @@ function Base.iterate(::EnumSet{W, T}, (v, set)) where {W,T}
     end
     return nothing
 end
-# asdf
 
 Base.bitstring(s::Union{AbstractSetEnum,EnumSet}) = bitstring(wrapped(s))
 end # module SetEnums
