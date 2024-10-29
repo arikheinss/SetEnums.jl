@@ -1,4 +1,6 @@
 # SetEnums
+> [!WARNING]  
+> This package is still under construction. 
 
 This Package adds a new type of Enum for which Sets can be created that are efficient, primitive binary data. The core Idea behind this is as follows: If one has a finite amount of traits/entities that can occur together in groups, one might assign each of these entities with a specific bit of a sufficiently large primitive type, f.ex. an `UInt64`. A Set of these entities can then be represented as an instance of this primitive type, where all the bits corresponding to entities that are in the set are 'on', where all bits assigned to entities that are not in the Set are 'off'. Creation and inspection of these primitive sets can then be done via bitwise operations like `or` and `xor`. The main contribution of this package is to provide  convenient and high-level syntax for creating and working with these enum types.
 
