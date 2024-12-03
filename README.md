@@ -28,3 +28,6 @@ false
 
 ```
 
+## Other Enum-related packages
+- [SumTypes](https://github.com/MasonProtter/SumTypes.jl) for tagged union types (aka sumtypes aka algebraic data types)
+- [EnumX.jl](https://github.com/fredrikekre/EnumX.jl) for scoped enums
