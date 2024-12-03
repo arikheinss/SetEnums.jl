@@ -41,7 +41,21 @@ empty(::Type{ES}) where {W,ES<:EnumSet{W}} = ES(zero(W))
 empty(::T) where {W,T<:AbstractSetEnum{W}} = empty(EnumSet{W,T})
 
 in(inst::T, es::EnumSet{W,T}) where {W,T<:AbstractSetEnum{W}} = (inst.id & es.set) > 0
+
+"""
+```toggle(instance, es::EnumSet)```
+
+Removes `instance` from `es` if it is contained within it, adds it otherwise. 
+
+(add/remove in an immutable sense, i.e. returns a new `EnumSet` with/without the given instance
+"""
 toggle(inst::T, es::EnumSet{W,T}) where {W,T<:AbstractSetEnum{W}} = EnumSet{W,T}(inst.id ⊻ es.set)
+
+"""
+```delete(instance, es::EnumSet)```
+
+Returns a new `EnumSet` that contains the same elements as `es`, but without `instance`.
+"""
 delete(inst::T, es::EnumSet{W,T}) where {W,T<:AbstractSetEnum{W}} = EnumSet{W,T}(es.set & (inst.id ⊻ es.set))
 
 
