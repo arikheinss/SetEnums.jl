@@ -14,6 +14,12 @@ using SetEnums:enumType, AbstractSetEnum
     @test !(C in s)
     @test !(D in s)
     @test (A | B) | D === A | (B | D)
+    
+    @test C in toggle(C, s)
+    @test !(B in toggle(B, s))
+    @test toggle(C, s) === (A | B | C)
+    @test !(B in delete(B, s))
+    @test s === delete(C, s)
 
 
     @setenum TestEnum8 X1 X2 X3 X4
@@ -29,39 +35,16 @@ using SetEnums:enumType, AbstractSetEnum
     @test isdefined(@__MODULE__, :TestEnumBig) && enumType(TestEnumBig) == BigInt
     s = B23 | B44 | B98 | B111
     @test s isa EnumSet{BigInt, TestEnumBig}
+    @test B23 in s
+    @test B44 in s
+    @test !(B45 in s)
+
+    @test B77 in toggle(B77, s)
+    @test !(B23 in toggle(B23, s))
+    @test toggle(B44, s) == (B23 | B98 | B111)
+    @test !(B44 in delete(B44, s))
+    @test s == delete(B1, s)
+    @test s == toggle(B2, toggle(B2, s))
+    @test s == toggle(B23, toggle(B23, s))
 end
 
-quote
-    println(A)
-    display(A)
-    A | B |> println
-    (A | B) | C |> println
-    (A | C) |> println
-    println(empty(EnumSet{UInt32,TestEnum}))
-    println(empty(A))
-
-    @assert A in (A | C)
-    @assert !(B in (A | C))
-    @setenum AnimalTraits::UInt8 Smart Pretty Flies Strong Stinky Loud
-
-    struct Animal
-        name::String
-        traits::EnumSet(AnimalTraits)
-    end
-
-    bear = Animal("Bear", (Strong | Stinky | Smart))
-    parrot = Animal("Parrot", (Smart | Flies | Pretty | Loud))
-    crow = Animal("Crow", delete(Pretty, parrot.traits))
-    dog = Animal("Fido", (Smart | Pretty | Loud))
-    dirty_dog = Animal("dirty Fido", toggle(Stinky, dog.traits))
-    clean_dog = Animal("cleaned Fido", toggle(Stinky, dirty_dog.traits))
-    myanimals = [bear, parrot, crow, dog, dirty_dog,]
-
-    println("Flying animals")
-    join((a.name for a in myanimals if Flies in a.traits), ", ") |> println
-
-    println("Filthy animals")
-    join((a.name for a in myanimals if Stinky in a.traits), ", ") |> println
-
-
-end
