@@ -74,13 +74,6 @@ julia>@setenum AnimalTraits::UInt8 Smart Pretty Flies Strong Stinky Loud
 """
 macro setenum end
 
-# macro setenum(name, instanceList::Expr)
-#     if instanceList.head == :block
-#         return :(@setenum $(esc(name)) $((instanceList.args)...))
-#     else
-#         throw(ArgumentError("Expression for instances not understood! Please use a begin..end block"))
-#     end
-# end
 macro setenum(name::Symbol, instances::Symbol...)
 
     Inttype = if length(instances) > 128
@@ -129,13 +122,10 @@ macro setenum(name::Expr, instanceNames...)
         $enum_name
 
     end
-    # push!(retExpr.args, :nothing)
     retExpr.head = :toplevel
     return retExpr
 end
 
-
-import Base.Iterators:takewhile, dropwhile
 
 Base.length(s::EnumSet) = count_ones(s.set)
 function Base.iterate(s::EnumSet{W, T}) where {W,T}
