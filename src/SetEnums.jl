@@ -4,7 +4,7 @@ module SetEnums
 import Base: instances, Integer, empty, in, &, |
 import Base.Enums: Enum, namemap
 
-export @setenum, set, toggle, delete, EnumSet 
+export @setenum, toggle, delete, EnumSet 
 
 abstract type AbstractSetEnum{T} <: Enum{T} end
 Integer(x::AbstractSetEnum) = getfield(x,1) #assuming each SetEnum is a simple wrapper around a primitive Integer 
@@ -41,7 +41,6 @@ empty(::Type{ES}) where {W,ES<:EnumSet{W}} = ES(zero(W))
 empty(::T) where {W,T<:AbstractSetEnum{W}} = empty(EnumSet{W,T})
 
 in(inst::T, es::EnumSet{W,T}) where {W,T<:AbstractSetEnum{W}} = (inst.id & es.set) > 0
-set(inst::T, es::EnumSet{W,T}) where {W,T<:AbstractSetEnum{W}} = inst | es
 toggle(inst::T, es::EnumSet{W,T}) where {W,T<:AbstractSetEnum{W}} = EnumSet{W,T}(inst.id ⊻ es.set)
 delete(inst::T, es::EnumSet{W,T}) where {W,T<:AbstractSetEnum{W}} = EnumSet{W,T}(es.set & (inst.id ⊻ es.set))
 
